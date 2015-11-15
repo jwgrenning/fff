@@ -165,7 +165,7 @@ typedef struct {
 
 #define FFF_RESET_HISTORY() fff.call_history_idx = 0;
 
-#define FFF_RESET fff_reset()
+#define FFF_RESET() fff_reset()
 END_EXTERN_C
 
   GLOBAL_FUNCS_AND_STRUCTS
@@ -275,7 +275,7 @@ def output_variables(arg_count, is_value_function)
     output_custom_function_signature(arg_count, is_value_function)
   }
   putd "extern FUNCNAME##_Fake FUNCNAME##_fake;\\"
-  putd "void FUNCNAME##_reset(); \\"
+  putd "void FUNCNAME##_reset(); \\"  # notice ';' must be here for declarations in extern "C"
 end
 
 #example: ARG0_TYPE arg0, ARG1_TYPE arg1

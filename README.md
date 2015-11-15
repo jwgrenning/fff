@@ -24,9 +24,7 @@ you want to create a fake for:
     void DISPLAY_init();
     ...
 
-Here's how you would define a fake function for this in your test suite:
-
-###The gcc way
+###Define a fake function for gcc###
 
 	//display.fff.h
 	#include "display.h"
@@ -36,40 +34,47 @@ Here's how you would define a fake function for this in your test suite:
 
     // test.c(pp)
     #include "display.fff.h"  /* creates function declarations */
-	#define GENERATE_FAKES
+	#define FFF_GENERATE_FAKE_DEFINES
     #include "display.fff.h"  /* creates function definition */
 
 
 	//fff_globals.c, you can name this whatever you want
     #include "fff.h"
-    DEFINE_FFF_GLOBALS;
+    FFF_DEFINE_GLOBALS
 
-###The Visual Studio way
+###Define a fake function for Visual Studio
 
-Visual Studio handles variadic macros differently than gcc.  So, don't use
-them until some nice person figures it out and give a pull request.
-Basically, you have to specify the number of arguments by choosing the right
+Visual Studio handles variadic macros differently than gcc.  Basically, you have 
+to specify the number of arguments by choosing the right
 DECLARE and DEFINE macro.
 
     //display.fff.h
     #include "display.h"
     #include "fff.h"
-    DECLARE_VOID_FUNC0(DISPLAY_init);
+    DECLARE_FAKE_VOID_FUNC0(DISPLAY_init);
 
 
     // test.c(pp)
     #include "display.fff.h"
-    DEFINE_VOID_FUNC0(DISPLAY_init);
+    DEFINE_FAKE_VOID_FUNC0(DISPLAY_init);
 
 
     //fff_globals.c, you can name this whatever you want
     #include "fff.h"
-    DEFINE_FFF_GLOBALS
+    FFF_DEFINE_GLOBALS
 
-* Note to Visual Studio users - Realize the variadic examples in the rest of this document have to be implemented as separate invocations of DECLARE and DEFINE macros.
+* Note to Visual Studio users - Realize the variadic examples in the 
+rest of this document have to be implemented as separate invocations 
+of DECLARE and DEFINE macros.  If you only need to use the fake in 
+a single test file, you can put both the DECLARE and DEFINE in the 
+test file.  Only the the creation of the fakes differ between gcc 
+and Visual Studio.  If you happen to use VS regularly and know how 
+to make variadic macros work, please contribute that.
 
 
-### Now, on with the compiler independent example
+### Now, on with examples done with gcc
+
+* note these tests are written in googletest and gcc.
 
 And the unit test might look something like this:
 
@@ -81,7 +86,8 @@ And the unit test might look something like this:
 
 So what has happened here?  The first thing to note is that the framework is 
 header only, all you need to do to use it is download <tt>fff.h</tt> and use
-it in your test build as shown above.
+it in your test build as shown above.  (For convenience, there is a 
+fff_globals.c file or you can take care or that yourself.)
 
 The magic is in the <tt>FAKE_VOID_FUNC</tt>.  This 
 expands a macro that defines a function returning <tt>void</tt> 
@@ -90,7 +96,7 @@ which has zero arguments.  It also defines a struct
 For instance, <tt>DISPLAY_init_fake.call_count</tt>is incremented every time the faked 
 function is called.
 
-Under the hood it generates a struct that looks like this:
+Under the hood it generates a struct that looks like this (give or take some details):
 
     typedef struct DISPLAY_init_Fake { 
         unsigned int call_count; 
@@ -99,9 +105,6 @@ Under the hood it generates a struct that looks like this:
         void(*custom_fake)(); 
     } DISPLAY_init_Fake;
     DISPLAY_init_Fake DISPLAY_init_fake;
-
-
-
 
 
 ## Capturing arguments
@@ -136,6 +139,9 @@ type (a char pointer in this example).
 A variable is created for every argument in the form 
 <tt>"function_name"fake.argN_val</tt>
 
+Keep in mind that parameters are saves as values.  In the above example the 
+lifetime of something pointed too, better be longer than the called function
+or just about anything can happen.
 
 
 ## Return values
@@ -195,7 +201,14 @@ fakes in the setup function of your test suite.
         RESET_FAKE(DISPLAY_get_line_insert_index);
     }
 
-You might want to define a macro to do this:
+If you want to reset all your fakes, you can do this:
+
+    void setup()
+    {
+        FFF_RESET
+    }
+
+You might want to define a macro to do this to be more selective:
 
 ``` 
 /* List of fakes used by this unit tester */
@@ -237,7 +250,7 @@ Here's how it works:
     	ASSERT_EQ(fff.call_history[2], (void *)longfunc0);
     }
     
-They are reset by calling <tt>FFF_RESET_HISTORY();</tt>
+They are reset by calling <tt>FFF_RESET_HISTORY() and FFF_RESET;</tt>
 
 
 ## Default Argument History
@@ -452,6 +465,16 @@ TEST_F(FFFTestSuite, test_fake_with_function_pointer)
 }
 ```
 
+##Suffering from macro expansion errors?
+
+You can expand the macro like this:
+
+    #define STR_HELPER(x) #x
+    #define STR(x) STR_HELPER(x)
+    #pragma message "Macro: " STR(DECLARE_FAKE_VOID_FUNC0(foobar))
+
+Once you have the macro text, grab it in an editor and make it readable.
+
 ## Find out more...
 
 Look under the examlples directory for full length examples in both C and C++.
@@ -489,6 +512,11 @@ So whats the point?
         <td>FAKE_VALUE_FUNC(return_type, fn [,arg_types*]);</td>
         <td>Define a fake function returning a value with type return_type taking n arguments</td>
         <td>FAKE_VALUE_FUNC(int, DISPLAY_get_line_insert_index);</td>
+    </tr>
+    <tr>
+        <td>FFF_RESET();</td>
+        <td>Reset the whole FFF</td>
+        <td>FFF_RESET();</td>
     </tr>
     <tr>
         <td>RESET_FAKE(fn);</td>

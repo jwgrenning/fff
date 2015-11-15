@@ -46,7 +46,7 @@ typedef struct {
 
 #define FFF_RESET_HISTORY() fff.call_history_idx = 0;
 
-#define FFF_RESET fff_reset()
+#define FFF_RESET() fff_reset()
 END_EXTERN_C
 
 /* -- INTERNAL HELPER MACROS -- */

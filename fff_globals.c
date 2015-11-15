@@ -1,3 +1,3 @@
 #include <fff.h>
 
-FFF_DEFINE_GLOBALS
+FFF_DEFINE_GLOBALS;
