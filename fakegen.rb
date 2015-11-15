@@ -486,7 +486,7 @@ end
 def output_generate_fakes_macros
 putd <<-GENERATE_FAKES_MACROS
 
-#ifdef GENERATE_FAKES
+#ifdef FFF_GENERATE_FAKE_DEFINES
     #undef FAKE_VALUE_FUNCTION
     #undef FAKE_VOID_FUNCTION
     #define FAKE_VALUE_FUNCTION DEFINE_FAKE_VALUE_FUNC
