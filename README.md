@@ -14,7 +14,6 @@ all C compilers are created equal, there are two ways to generate fakes with fff
 * With gcc (shown first)
 * With Visual Studio (shown second)
 
-
 ## Hello fake world!
 
 Say you are testing an embedded user interface and you have a function that 
