@@ -2,12 +2,17 @@
 -----------------------------
 > How long can we _maintain_? I wonder. How long before one of us starts raving 
 > and jabbering at this boy? What will he think then? This same lonely desert 
-> was the last known home of the Manson family. Will he make that grim 
+> was the last known home of the Manson family. Will he make that grim
 > connection...
 
 ## A Fake Function Framework for C
 fff is a micro-framework for creating fake C functions for tests.  Because life
-is too short to spend time hand-writing fake functions for testing.
+is too short to spend time hand-writing fake functions for testing.  Because not
+all C compilers are created equal, there are two ways to generate fakes with fff.
+
+
+* With gcc (shown first)
+* With Visual Studio (shown second)
 
 
 ## Hello fake world!
@@ -22,10 +27,50 @@ you want to create a fake for:
 
 Here's how you would define a fake function for this in your test suite:
 
+###The gcc way
+
+	//display.fff.h
+	#include "display.h"
+    #include "fff.h"
+    FAKE_VOID_FUNC(DISPLAY_init);
+
+
     // test.c(pp)
+    #include "display.fff.h"  /* creates function declarations */
+	#define GENERATE_FAKES
+    #include "display.fff.h"  /* creates function definition */
+
+
+	//fff_globals.c, you can name this whatever you want
     #include "fff.h"
     DEFINE_FFF_GLOBALS;
-    FAKE_VOID_FUNC(DISPLAY_init);
+
+###The Visual Studio way
+
+Visual Studio handles variadic macros differently than gcc.  So, don't use
+them until some nice person figures it out and give a pull request.
+Basically, you have to specify the number of arguments by choosing the right
+DECLARE and DEFINE macro.
+
+    //display.fff.h
+    #include "display.h"
+    #include "fff.h"
+    DECLARE_VOID_FUNC0(DISPLAY_init);
+
+
+    // test.c(pp)
+    #include "display.fff.h"
+    DEFINE_VOID_FUNC0(DISPLAY_init);
+
+
+    //fff_globals.c, you can name this whatever you want
+    #include "fff.h"
+    DEFINE_FFF_GLOBALS
+
+* Note to Visual Studio users - Realize the variadic examples in the rest of this document have to be implemented as separate invocations of DECLARE and DEFINE macros.
+
+
+### Now, on with the compiler independent example
 
 And the unit test might look something like this:
 
@@ -36,8 +81,8 @@ And the unit test might look something like this:
     }
 
 So what has happened here?  The first thing to note is that the framework is 
-header only, all you need to do to use it is download <tt>fff.h</tt> and include
-it in your test suite.  
+header only, all you need to do to use it is download <tt>fff.h</tt> and use
+it in your test build as shown above.
 
 The magic is in the <tt>FAKE_VOID_FUNC</tt>.  This 
 expands a macro that defines a function returning <tt>void</tt> 
