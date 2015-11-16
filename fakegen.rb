@@ -499,6 +499,18 @@ putd <<-GENERATE_FAKES_MACROS
   GENERATE_FAKES_MACROS
 end
 
+def output_macro_expander_macros
+  puts <<-output_macro_expander_macros
+
+/* Macro errors have go you down? See of this macro expander helps */
+/* Example: #pragma message FFF_EXPAND_MACRO(FAKE_VALUE_FUNCTION(int, foo, bar)) */
+
+#define FFF_EXPAND_MACRO_HELPER(x) #x
+#define FFF_EXPAND_MACRO(x) "Macro:<" #x "> Expansion: <" FFF_EXPAND_MACRO_HELPER(x) ">"
+
+output_macro_expander_macros
+end
+
 def output_c_and_cpp
 
   include_guard {
@@ -510,6 +522,7 @@ def output_c_and_cpp
     yield
     output_macro_counting_shortcuts
     output_declare_define_macros
+    output_macro_expander_macros
     }
   output_generate_fakes_macros
 end

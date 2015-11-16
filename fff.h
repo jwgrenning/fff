@@ -1159,6 +1159,13 @@ END_EXTERN_C
 #define DEFINE_FUNC_VOID_N(N,...)     DEFINE_FAKE_VOID_FUNC ## N(__VA_ARGS__)
 
 
+/* Macro errors have go you down? See of this macro expander helps */
+/* Example: #pragma message FFF_EXPAND_MACRO(FAKE_VALUE_FUNCTION(int, foo, bar)) */
+
+#define FFF_EXPAND_MACRO_HELPER(x) #x
+#define FFF_EXPAND_MACRO(x) "Macro:<" #x "> Expansion: <" FFF_EXPAND_MACRO_HELPER(x) ">"
+
+
 #endif
 
 #ifdef FFF_GENERATE_FAKE_DEFINES
