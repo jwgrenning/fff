@@ -387,11 +387,11 @@ END_EXTERN_C
 end
 
 def extern_c
-  putd "EXTERN_C \\"
+  putd "FFF_EXTERN_C \\"
   pushd 
     yield
   popd
-  putd "END_EXTERN_C \\"
+  putd "FFF_END_EXTERN_C \\"
 end
 
 def in_struct
