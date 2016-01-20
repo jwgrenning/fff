@@ -13,20 +13,20 @@
 #endif
 
 #ifdef FFF_NO_EXTERN_C /* production code is C that is compiled with a C++ compiler */
-    #define EXTERN_C
-    #define END_EXTERN_C
+    #define FFF_EXTERN_C
+    #define FFF_END_EXTERN_C
 #else
     #ifdef __cplusplus
-        #define EXTERN_C extern "C"{
-        #define END_EXTERN_C } 
+        #define FFF_EXTERN_C extern "C"{
+        #define FFF_END_EXTERN_C } 
     #else  /* ansi c */
-        #define EXTERN_C 
-        #define END_EXTERN_C 
+        #define FFF_EXTERN_C 
+        #define FFF_END_EXTERN_C 
     #endif
 #endif
 
 /* Global functions and structs */
-EXTERN_C
+FFF_EXTERN_C
 typedef void (*reset_fake_function_t)(void);
 
 void fff_register_fake(reset_fake_function_t reset_fake);
@@ -47,7 +47,7 @@ typedef struct {
 #define FFF_RESET_HISTORY() fff.call_history_idx = 0;
 
 #define FFF_RESET() fff_reset()
-END_EXTERN_C
+FFF_END_EXTERN_C
 
 /* -- INTERNAL HELPER MACROS -- */
 #define SET_RETURN_SEQ(FUNCNAME, ARRAY_POINTER, ARRAY_LEN) \
@@ -101,7 +101,7 @@ END_EXTERN_C
     return FUNCNAME##_fake.return_val; \
 
 #define DEFINE_RESET_FUNCTION(FUNCNAME) \
-    void FUNCNAME##_reset(){ \
+    void FUNCNAME##_reset(void){ \
         fff_memset(&FUNCNAME##_fake, 0, (int)sizeof(FUNCNAME##_fake)); \
     }
 /* -- END INTERNAL HELPER MACROS -- */
@@ -109,12 +109,12 @@ END_EXTERN_C
 
 /* -- GLOBAL HELPERS -- */
 
-EXTERN_C
+FFF_EXTERN_C
   extern fff_globals_t fff;
-END_EXTERN_C
+FFF_END_EXTERN_C
 
 #define FFF_DEFINE_GLOBALS \
-  EXTERN_C \
+  FFF_EXTERN_C \
     fff_globals_t fff; \
 \
     void fff_memset(void * ptr, int value, int num )\
@@ -149,7 +149,7 @@ END_EXTERN_C
       fff_memset(&fff, 0, sizeof(fff));\
     }\
 \
-  END_EXTERN_C
+  FFF_END_EXTERN_C
   
 #define DEFINE_FFF_GLOBALS FFF_DEFINE_GLOBALS
 
@@ -168,7 +168,7 @@ END_EXTERN_C
             void(*custom_fake)(); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
     FFF_END_EXTERN_C \
 
 #define DEFINE_FAKE_VOID_FUNC0(FUNCNAME) \
@@ -202,7 +202,7 @@ END_EXTERN_C
             void(*custom_fake)(ARG0_TYPE arg0); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
     FFF_END_EXTERN_C \
 
 #define DEFINE_FAKE_VOID_FUNC1(FUNCNAME, ARG0_TYPE) \
@@ -239,7 +239,7 @@ END_EXTERN_C
             void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
     FFF_END_EXTERN_C \
 
 #define DEFINE_FAKE_VOID_FUNC2(FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
@@ -279,7 +279,7 @@ END_EXTERN_C
             void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
     FFF_END_EXTERN_C \
 
 #define DEFINE_FAKE_VOID_FUNC3(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
@@ -322,7 +322,7 @@ END_EXTERN_C
             void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
     FFF_END_EXTERN_C \
 
 #define DEFINE_FAKE_VOID_FUNC4(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
@@ -368,7 +368,7 @@ END_EXTERN_C
             void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
     FFF_END_EXTERN_C \
 
 #define DEFINE_FAKE_VOID_FUNC5(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
@@ -417,7 +417,7 @@ END_EXTERN_C
             void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
     FFF_END_EXTERN_C \
 
 #define DEFINE_FAKE_VOID_FUNC6(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
@@ -469,7 +469,7 @@ END_EXTERN_C
             void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
     FFF_END_EXTERN_C \
 
 #define DEFINE_FAKE_VOID_FUNC7(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
@@ -524,7 +524,7 @@ END_EXTERN_C
             void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
     FFF_END_EXTERN_C \
 
 #define DEFINE_FAKE_VOID_FUNC8(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
@@ -582,7 +582,7 @@ END_EXTERN_C
             void(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
     FFF_END_EXTERN_C \
 
 #define DEFINE_FAKE_VOID_FUNC9(FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
@@ -634,7 +634,7 @@ END_EXTERN_C
             RETURN_TYPE(*custom_fake)(); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
     FFF_END_EXTERN_C \
 
 #define DEFINE_FAKE_VALUE_FUNC0(RETURN_TYPE, FUNCNAME) \
@@ -670,7 +670,7 @@ END_EXTERN_C
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
     FFF_END_EXTERN_C \
 
 #define DEFINE_FAKE_VALUE_FUNC1(RETURN_TYPE, FUNCNAME, ARG0_TYPE) \
@@ -709,7 +709,7 @@ END_EXTERN_C
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
     FFF_END_EXTERN_C \
 
 #define DEFINE_FAKE_VALUE_FUNC2(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE) \
@@ -751,7 +751,7 @@ END_EXTERN_C
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
     FFF_END_EXTERN_C \
 
 #define DEFINE_FAKE_VALUE_FUNC3(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE) \
@@ -796,7 +796,7 @@ END_EXTERN_C
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
     FFF_END_EXTERN_C \
 
 #define DEFINE_FAKE_VALUE_FUNC4(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE) \
@@ -844,7 +844,7 @@ END_EXTERN_C
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
     FFF_END_EXTERN_C \
 
 #define DEFINE_FAKE_VALUE_FUNC5(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE) \
@@ -895,7 +895,7 @@ END_EXTERN_C
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
     FFF_END_EXTERN_C \
 
 #define DEFINE_FAKE_VALUE_FUNC6(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE) \
@@ -949,7 +949,7 @@ END_EXTERN_C
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
     FFF_END_EXTERN_C \
 
 #define DEFINE_FAKE_VALUE_FUNC7(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE) \
@@ -1006,7 +1006,7 @@ END_EXTERN_C
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
     FFF_END_EXTERN_C \
 
 #define DEFINE_FAKE_VALUE_FUNC8(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE) \
@@ -1066,7 +1066,7 @@ END_EXTERN_C
             RETURN_TYPE(*custom_fake)(ARG0_TYPE arg0, ARG1_TYPE arg1, ARG2_TYPE arg2, ARG3_TYPE arg3, ARG4_TYPE arg4, ARG5_TYPE arg5, ARG6_TYPE arg6, ARG7_TYPE arg7, ARG8_TYPE arg8); \
         } FUNCNAME##_Fake;\
         extern FUNCNAME##_Fake FUNCNAME##_fake;\
-        void FUNCNAME##_reset(); \
+        void FUNCNAME##_reset(void); \
     FFF_END_EXTERN_C \
 
 #define DEFINE_FAKE_VALUE_FUNC9(RETURN_TYPE, FUNCNAME, ARG0_TYPE, ARG1_TYPE, ARG2_TYPE, ARG3_TYPE, ARG4_TYPE, ARG5_TYPE, ARG6_TYPE, ARG7_TYPE, ARG8_TYPE) \
