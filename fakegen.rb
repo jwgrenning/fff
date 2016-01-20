@@ -127,15 +127,15 @@ end
 def define_extern_c_helper
   putd ""
   putd "#ifdef FFF_NO_EXTERN_C /* production code is C that is compiled with a C++ compiler */"
-  putd "    #define EXTERN_C"
-  putd "    #define END_EXTERN_C"
+  putd "    #define FFF_EXTERN_C"
+  putd "    #define FFF_END_EXTERN_C"
   putd "#else"
   putd "    #ifdef __cplusplus"
-  putd "        #define EXTERN_C extern \"C\"{"
-  putd "        #define END_EXTERN_C } "
+  putd "        #define FFF_EXTERN_C extern \"C\"{"
+  putd "        #define FFF_END_EXTERN_C } "
   putd "    #else  /* ansi c */"
-  putd "        #define EXTERN_C "
-  putd "        #define END_EXTERN_C "
+  putd "        #define FFF_EXTERN_C "
+  putd "        #define FFF_END_EXTERN_C "
   putd "    #endif"
   putd "#endif"
 end
@@ -144,7 +144,7 @@ def declare_global_functions_and_structs
   putd <<-GLOBAL_FUNCS_AND_STRUCTS
 
 /* Global functions and structs */
-EXTERN_C
+FFF_EXTERN_C
 typedef void (*reset_fake_function_t)(void);
 
 void fff_register_fake(reset_fake_function_t reset_fake);
@@ -166,7 +166,7 @@ typedef struct {
 #define FFF_RESET_HISTORY() fff.call_history_idx = 0;
 
 #define FFF_RESET() fff_reset()
-END_EXTERN_C
+FFF_END_EXTERN_C
 
   GLOBAL_FUNCS_AND_STRUCTS
 
@@ -175,7 +175,7 @@ end
 def define_reset_fake_helper
   putd ""
   putd "#define DEFINE_RESET_FUNCTION(FUNCNAME) \\"
-  putd "    void FUNCNAME##_reset(){ \\"
+  putd "    void FUNCNAME##_reset(void){ \\"
   putd "        fff_memset(&FUNCNAME##_fake, 0, (int)sizeof(FUNCNAME##_fake)); \\"
   putd "    }"
 end
@@ -275,7 +275,7 @@ def output_variables(arg_count, is_value_function)
     output_custom_function_signature(arg_count, is_value_function)
   }
   putd "extern FUNCNAME##_Fake FUNCNAME##_fake;\\"
-  putd "void FUNCNAME##_reset(); \\"  # notice ';' must be here for declarations in extern "C"
+  putd "void FUNCNAME##_reset(void); \\"  # notice ';' must be here for declarations in extern "C"
 end
 
 #example: ARG0_TYPE arg0, ARG1_TYPE arg1
@@ -330,12 +330,12 @@ def define_fff_globals
 
 /* -- GLOBAL HELPERS -- */
 
-EXTERN_C
+FFF_EXTERN_C
   extern fff_globals_t fff;
-END_EXTERN_C
+FFF_END_EXTERN_C
 
 #define FFF_DEFINE_GLOBALS \\
-  EXTERN_C \\
+  FFF_EXTERN_C \\
     fff_globals_t fff; \\
 \\
     void fff_memset(void * ptr, int value, int num )\\
@@ -370,7 +370,7 @@ END_EXTERN_C
       fff_memset(&fff, 0, sizeof(fff));\\
     }\\
 \\
-  END_EXTERN_C
+  FFF_END_EXTERN_C
   
 #define DEFINE_FFF_GLOBALS FFF_DEFINE_GLOBALS
 
